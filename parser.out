@@ -1,0 +1,1200 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> recurrence
+Rule 1     recurrence -> inits if_seq
+Rule 2     inits -> transitions
+Rule 3     if_seq -> if_statement
+Rule 4     if_seq -> if_statement ELSE if_seq
+Rule 5     if_seq -> if_statement ELSE LBRACK transitions RBRACK
+Rule 6     if_statement -> IF LPAREN cond RPAREN LBRACK transitions RBRACK
+Rule 7     cond -> condo
+Rule 8     condo -> conda OR condo
+Rule 9     condo -> conda
+Rule 10    conda -> atom_cond AND conda
+Rule 11    conda -> atom_cond
+Rule 12    atom_cond -> expr EQ expr
+Rule 13    atom_cond -> expr GT expr
+Rule 14    atom_cond -> expr LT expr
+Rule 15    atom_cond -> expr GE expr
+Rule 16    atom_cond -> expr LE expr
+Rule 17    atom_cond -> TRUE
+Rule 18    atom_cond -> FALSE
+Rule 19    transitions -> transition transitions
+Rule 20    transitions -> <empty>
+Rule 21    transition -> VARIABLE ASSIGN expr SEMI
+Rule 22    transition -> array_ref ASSIGN expr SEMI
+Rule 23    array_ref -> VARIABLE array_index
+Rule 24    array_index -> LPAREN expr RPAREN array_index
+Rule 25    array_index -> LPAREN expr RPAREN
+Rule 26    expr -> factor PLUS expr
+Rule 27    expr -> factor MINUS expr
+Rule 28    expr -> factor
+Rule 29    factor -> factor TIMES operand
+Rule 30    factor -> factor DIV operand
+Rule 31    factor -> factor MOD operand
+Rule 32    factor -> operand
+Rule 33    operand -> VARIABLE
+Rule 34    operand -> NUMBER
+Rule 35    operand -> array_ref
+Rule 36    operand -> LPAREN expr RPAREN
+
+Terminals, with rules where they appear
+
+AND                  : 10
+ASSIGN               : 21 22
+DIV                  : 30
+ELSE                 : 4 5
+EQ                   : 12
+FALSE                : 18
+GE                   : 15
+GT                   : 13
+IF                   : 6
+LBRACK               : 5 6
+LE                   : 16
+LPAREN               : 6 24 25 36
+LT                   : 14
+MINUS                : 27
+MOD                  : 31
+NUMBER               : 34
+OR                   : 8
+PLUS                 : 26
+RBRACK               : 5 6
+RPAREN               : 6 24 25 36
+SEMI                 : 21 22
+TIMES                : 29
+TRUE                 : 17
+VARIABLE             : 21 23 33
+error                : 
+
+Nonterminals, with rules where they appear
+
+array_index          : 23 24
+array_ref            : 22 35
+atom_cond            : 10 11
+cond                 : 6
+conda                : 8 9 10
+condo                : 7 8
+expr                 : 12 12 13 13 14 14 15 15 16 16 21 22 24 25 26 27 36
+factor               : 26 27 28 29 30 31
+if_seq               : 1 4
+if_statement         : 3 4 5
+inits                : 1
+operand              : 29 30 31 32
+recurrence           : 0
+transition           : 19
+transitions          : 2 5 6 19
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . recurrence
+    (1) recurrence -> . inits if_seq
+    (2) inits -> . transitions
+    (19) transitions -> . transition transitions
+    (20) transitions -> .
+    (21) transition -> . VARIABLE ASSIGN expr SEMI
+    (22) transition -> . array_ref ASSIGN expr SEMI
+    (23) array_ref -> . VARIABLE array_index
+
+    IF              reduce using rule 20 (transitions -> .)
+    VARIABLE        shift and go to state 5
+
+    recurrence                     shift and go to state 1
+    inits                          shift and go to state 2
+    transitions                    shift and go to state 3
+    transition                     shift and go to state 4
+    array_ref                      shift and go to state 6
+
+state 1
+
+    (0) S' -> recurrence .
+
+
+
+state 2
+
+    (1) recurrence -> inits . if_seq
+    (3) if_seq -> . if_statement
+    (4) if_seq -> . if_statement ELSE if_seq
+    (5) if_seq -> . if_statement ELSE LBRACK transitions RBRACK
+    (6) if_statement -> . IF LPAREN cond RPAREN LBRACK transitions RBRACK
+
+    IF              shift and go to state 9
+
+    if_seq                         shift and go to state 7
+    if_statement                   shift and go to state 8
+
+state 3
+
+    (2) inits -> transitions .
+
+    IF              reduce using rule 2 (inits -> transitions .)
+
+
+state 4
+
+    (19) transitions -> transition . transitions
+    (19) transitions -> . transition transitions
+    (20) transitions -> .
+    (21) transition -> . VARIABLE ASSIGN expr SEMI
+    (22) transition -> . array_ref ASSIGN expr SEMI
+    (23) array_ref -> . VARIABLE array_index
+
+    IF              reduce using rule 20 (transitions -> .)
+    RBRACK          reduce using rule 20 (transitions -> .)
+    VARIABLE        shift and go to state 5
+
+    transition                     shift and go to state 4
+    transitions                    shift and go to state 10
+    array_ref                      shift and go to state 6
+
+state 5
+
+    (21) transition -> VARIABLE . ASSIGN expr SEMI
+    (23) array_ref -> VARIABLE . array_index
+    (24) array_index -> . LPAREN expr RPAREN array_index
+    (25) array_index -> . LPAREN expr RPAREN
+
+    ASSIGN          shift and go to state 11
+    LPAREN          shift and go to state 13
+
+    array_index                    shift and go to state 12
+
+state 6
+
+    (22) transition -> array_ref . ASSIGN expr SEMI
+
+    ASSIGN          shift and go to state 14
+
+
+state 7
+
+    (1) recurrence -> inits if_seq .
+
+    $end            reduce using rule 1 (recurrence -> inits if_seq .)
+
+
+state 8
+
+    (3) if_seq -> if_statement .
+    (4) if_seq -> if_statement . ELSE if_seq
+    (5) if_seq -> if_statement . ELSE LBRACK transitions RBRACK
+
+    $end            reduce using rule 3 (if_seq -> if_statement .)
+    ELSE            shift and go to state 15
+
+
+state 9
+
+    (6) if_statement -> IF . LPAREN cond RPAREN LBRACK transitions RBRACK
+
+    LPAREN          shift and go to state 16
+
+
+state 10
+
+    (19) transitions -> transition transitions .
+
+    IF              reduce using rule 19 (transitions -> transition transitions .)
+    RBRACK          reduce using rule 19 (transitions -> transition transitions .)
+
+
+state 11
+
+    (21) transition -> VARIABLE ASSIGN . expr SEMI
+    (26) expr -> . factor PLUS expr
+    (27) expr -> . factor MINUS expr
+    (28) expr -> . factor
+    (29) factor -> . factor TIMES operand
+    (30) factor -> . factor DIV operand
+    (31) factor -> . factor MOD operand
+    (32) factor -> . operand
+    (33) operand -> . VARIABLE
+    (34) operand -> . NUMBER
+    (35) operand -> . array_ref
+    (36) operand -> . LPAREN expr RPAREN
+    (23) array_ref -> . VARIABLE array_index
+
+    VARIABLE        shift and go to state 17
+    NUMBER          shift and go to state 21
+    LPAREN          shift and go to state 23
+
+    expr                           shift and go to state 18
+    factor                         shift and go to state 19
+    operand                        shift and go to state 20
+    array_ref                      shift and go to state 22
+
+state 12
+
+    (23) array_ref -> VARIABLE array_index .
+
+    ASSIGN          reduce using rule 23 (array_ref -> VARIABLE array_index .)
+    PLUS            reduce using rule 23 (array_ref -> VARIABLE array_index .)
+    MINUS           reduce using rule 23 (array_ref -> VARIABLE array_index .)
+    TIMES           reduce using rule 23 (array_ref -> VARIABLE array_index .)
+    DIV             reduce using rule 23 (array_ref -> VARIABLE array_index .)
+    MOD             reduce using rule 23 (array_ref -> VARIABLE array_index .)
+    SEMI            reduce using rule 23 (array_ref -> VARIABLE array_index .)
+    RPAREN          reduce using rule 23 (array_ref -> VARIABLE array_index .)
+    EQ              reduce using rule 23 (array_ref -> VARIABLE array_index .)
+    GT              reduce using rule 23 (array_ref -> VARIABLE array_index .)
+    LT              reduce using rule 23 (array_ref -> VARIABLE array_index .)
+    GE              reduce using rule 23 (array_ref -> VARIABLE array_index .)
+    LE              reduce using rule 23 (array_ref -> VARIABLE array_index .)
+    AND             reduce using rule 23 (array_ref -> VARIABLE array_index .)
+    OR              reduce using rule 23 (array_ref -> VARIABLE array_index .)
+
+
+state 13
+
+    (24) array_index -> LPAREN . expr RPAREN array_index
+    (25) array_index -> LPAREN . expr RPAREN
+    (26) expr -> . factor PLUS expr
+    (27) expr -> . factor MINUS expr
+    (28) expr -> . factor
+    (29) factor -> . factor TIMES operand
+    (30) factor -> . factor DIV operand
+    (31) factor -> . factor MOD operand
+    (32) factor -> . operand
+    (33) operand -> . VARIABLE
+    (34) operand -> . NUMBER
+    (35) operand -> . array_ref
+    (36) operand -> . LPAREN expr RPAREN
+    (23) array_ref -> . VARIABLE array_index
+
+    VARIABLE        shift and go to state 17
+    NUMBER          shift and go to state 21
+    LPAREN          shift and go to state 23
+
+    expr                           shift and go to state 24
+    factor                         shift and go to state 19
+    operand                        shift and go to state 20
+    array_ref                      shift and go to state 22
+
+state 14
+
+    (22) transition -> array_ref ASSIGN . expr SEMI
+    (26) expr -> . factor PLUS expr
+    (27) expr -> . factor MINUS expr
+    (28) expr -> . factor
+    (29) factor -> . factor TIMES operand
+    (30) factor -> . factor DIV operand
+    (31) factor -> . factor MOD operand
+    (32) factor -> . operand
+    (33) operand -> . VARIABLE
+    (34) operand -> . NUMBER
+    (35) operand -> . array_ref
+    (36) operand -> . LPAREN expr RPAREN
+    (23) array_ref -> . VARIABLE array_index
+
+    VARIABLE        shift and go to state 17
+    NUMBER          shift and go to state 21
+    LPAREN          shift and go to state 23
+
+    array_ref                      shift and go to state 22
+    expr                           shift and go to state 25
+    factor                         shift and go to state 19
+    operand                        shift and go to state 20
+
+state 15
+
+    (4) if_seq -> if_statement ELSE . if_seq
+    (5) if_seq -> if_statement ELSE . LBRACK transitions RBRACK
+    (3) if_seq -> . if_statement
+    (4) if_seq -> . if_statement ELSE if_seq
+    (5) if_seq -> . if_statement ELSE LBRACK transitions RBRACK
+    (6) if_statement -> . IF LPAREN cond RPAREN LBRACK transitions RBRACK
+
+    LBRACK          shift and go to state 27
+    IF              shift and go to state 9
+
+    if_statement                   shift and go to state 8
+    if_seq                         shift and go to state 26
+
+state 16
+
+    (6) if_statement -> IF LPAREN . cond RPAREN LBRACK transitions RBRACK
+    (7) cond -> . condo
+    (8) condo -> . conda OR condo
+    (9) condo -> . conda
+    (10) conda -> . atom_cond AND conda
+    (11) conda -> . atom_cond
+    (12) atom_cond -> . expr EQ expr
+    (13) atom_cond -> . expr GT expr
+    (14) atom_cond -> . expr LT expr
+    (15) atom_cond -> . expr GE expr
+    (16) atom_cond -> . expr LE expr
+    (17) atom_cond -> . TRUE
+    (18) atom_cond -> . FALSE
+    (26) expr -> . factor PLUS expr
+    (27) expr -> . factor MINUS expr
+    (28) expr -> . factor
+    (29) factor -> . factor TIMES operand
+    (30) factor -> . factor DIV operand
+    (31) factor -> . factor MOD operand
+    (32) factor -> . operand
+    (33) operand -> . VARIABLE
+    (34) operand -> . NUMBER
+    (35) operand -> . array_ref
+    (36) operand -> . LPAREN expr RPAREN
+    (23) array_ref -> . VARIABLE array_index
+
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+    VARIABLE        shift and go to state 17
+    NUMBER          shift and go to state 21
+    LPAREN          shift and go to state 23
+
+    cond                           shift and go to state 28
+    condo                          shift and go to state 29
+    conda                          shift and go to state 30
+    atom_cond                      shift and go to state 31
+    expr                           shift and go to state 32
+    factor                         shift and go to state 19
+    operand                        shift and go to state 20
+    array_ref                      shift and go to state 22
+
+state 17
+
+    (33) operand -> VARIABLE .
+    (23) array_ref -> VARIABLE . array_index
+    (24) array_index -> . LPAREN expr RPAREN array_index
+    (25) array_index -> . LPAREN expr RPAREN
+
+    PLUS            reduce using rule 33 (operand -> VARIABLE .)
+    MINUS           reduce using rule 33 (operand -> VARIABLE .)
+    TIMES           reduce using rule 33 (operand -> VARIABLE .)
+    DIV             reduce using rule 33 (operand -> VARIABLE .)
+    MOD             reduce using rule 33 (operand -> VARIABLE .)
+    SEMI            reduce using rule 33 (operand -> VARIABLE .)
+    RPAREN          reduce using rule 33 (operand -> VARIABLE .)
+    EQ              reduce using rule 33 (operand -> VARIABLE .)
+    GT              reduce using rule 33 (operand -> VARIABLE .)
+    LT              reduce using rule 33 (operand -> VARIABLE .)
+    GE              reduce using rule 33 (operand -> VARIABLE .)
+    LE              reduce using rule 33 (operand -> VARIABLE .)
+    AND             reduce using rule 33 (operand -> VARIABLE .)
+    OR              reduce using rule 33 (operand -> VARIABLE .)
+    LPAREN          shift and go to state 13
+
+    array_index                    shift and go to state 12
+
+state 18
+
+    (21) transition -> VARIABLE ASSIGN expr . SEMI
+
+    SEMI            shift and go to state 35
+
+
+state 19
+
+    (26) expr -> factor . PLUS expr
+    (27) expr -> factor . MINUS expr
+    (28) expr -> factor .
+    (29) factor -> factor . TIMES operand
+    (30) factor -> factor . DIV operand
+    (31) factor -> factor . MOD operand
+
+    PLUS            shift and go to state 36
+    MINUS           shift and go to state 37
+    SEMI            reduce using rule 28 (expr -> factor .)
+    RPAREN          reduce using rule 28 (expr -> factor .)
+    EQ              reduce using rule 28 (expr -> factor .)
+    GT              reduce using rule 28 (expr -> factor .)
+    LT              reduce using rule 28 (expr -> factor .)
+    GE              reduce using rule 28 (expr -> factor .)
+    LE              reduce using rule 28 (expr -> factor .)
+    AND             reduce using rule 28 (expr -> factor .)
+    OR              reduce using rule 28 (expr -> factor .)
+    TIMES           shift and go to state 38
+    DIV             shift and go to state 39
+    MOD             shift and go to state 40
+
+
+state 20
+
+    (32) factor -> operand .
+
+    PLUS            reduce using rule 32 (factor -> operand .)
+    MINUS           reduce using rule 32 (factor -> operand .)
+    TIMES           reduce using rule 32 (factor -> operand .)
+    DIV             reduce using rule 32 (factor -> operand .)
+    MOD             reduce using rule 32 (factor -> operand .)
+    SEMI            reduce using rule 32 (factor -> operand .)
+    RPAREN          reduce using rule 32 (factor -> operand .)
+    EQ              reduce using rule 32 (factor -> operand .)
+    GT              reduce using rule 32 (factor -> operand .)
+    LT              reduce using rule 32 (factor -> operand .)
+    GE              reduce using rule 32 (factor -> operand .)
+    LE              reduce using rule 32 (factor -> operand .)
+    AND             reduce using rule 32 (factor -> operand .)
+    OR              reduce using rule 32 (factor -> operand .)
+
+
+state 21
+
+    (34) operand -> NUMBER .
+
+    PLUS            reduce using rule 34 (operand -> NUMBER .)
+    MINUS           reduce using rule 34 (operand -> NUMBER .)
+    TIMES           reduce using rule 34 (operand -> NUMBER .)
+    DIV             reduce using rule 34 (operand -> NUMBER .)
+    MOD             reduce using rule 34 (operand -> NUMBER .)
+    SEMI            reduce using rule 34 (operand -> NUMBER .)
+    RPAREN          reduce using rule 34 (operand -> NUMBER .)
+    EQ              reduce using rule 34 (operand -> NUMBER .)
+    GT              reduce using rule 34 (operand -> NUMBER .)
+    LT              reduce using rule 34 (operand -> NUMBER .)
+    GE              reduce using rule 34 (operand -> NUMBER .)
+    LE              reduce using rule 34 (operand -> NUMBER .)
+    AND             reduce using rule 34 (operand -> NUMBER .)
+    OR              reduce using rule 34 (operand -> NUMBER .)
+
+
+state 22
+
+    (35) operand -> array_ref .
+
+    PLUS            reduce using rule 35 (operand -> array_ref .)
+    MINUS           reduce using rule 35 (operand -> array_ref .)
+    TIMES           reduce using rule 35 (operand -> array_ref .)
+    DIV             reduce using rule 35 (operand -> array_ref .)
+    MOD             reduce using rule 35 (operand -> array_ref .)
+    SEMI            reduce using rule 35 (operand -> array_ref .)
+    RPAREN          reduce using rule 35 (operand -> array_ref .)
+    EQ              reduce using rule 35 (operand -> array_ref .)
+    GT              reduce using rule 35 (operand -> array_ref .)
+    LT              reduce using rule 35 (operand -> array_ref .)
+    GE              reduce using rule 35 (operand -> array_ref .)
+    LE              reduce using rule 35 (operand -> array_ref .)
+    AND             reduce using rule 35 (operand -> array_ref .)
+    OR              reduce using rule 35 (operand -> array_ref .)
+
+
+state 23
+
+    (36) operand -> LPAREN . expr RPAREN
+    (26) expr -> . factor PLUS expr
+    (27) expr -> . factor MINUS expr
+    (28) expr -> . factor
+    (29) factor -> . factor TIMES operand
+    (30) factor -> . factor DIV operand
+    (31) factor -> . factor MOD operand
+    (32) factor -> . operand
+    (33) operand -> . VARIABLE
+    (34) operand -> . NUMBER
+    (35) operand -> . array_ref
+    (36) operand -> . LPAREN expr RPAREN
+    (23) array_ref -> . VARIABLE array_index
+
+    VARIABLE        shift and go to state 17
+    NUMBER          shift and go to state 21
+    LPAREN          shift and go to state 23
+
+    expr                           shift and go to state 41
+    factor                         shift and go to state 19
+    operand                        shift and go to state 20
+    array_ref                      shift and go to state 22
+
+state 24
+
+    (24) array_index -> LPAREN expr . RPAREN array_index
+    (25) array_index -> LPAREN expr . RPAREN
+
+    RPAREN          shift and go to state 42
+
+
+state 25
+
+    (22) transition -> array_ref ASSIGN expr . SEMI
+
+    SEMI            shift and go to state 43
+
+
+state 26
+
+    (4) if_seq -> if_statement ELSE if_seq .
+
+    $end            reduce using rule 4 (if_seq -> if_statement ELSE if_seq .)
+
+
+state 27
+
+    (5) if_seq -> if_statement ELSE LBRACK . transitions RBRACK
+    (19) transitions -> . transition transitions
+    (20) transitions -> .
+    (21) transition -> . VARIABLE ASSIGN expr SEMI
+    (22) transition -> . array_ref ASSIGN expr SEMI
+    (23) array_ref -> . VARIABLE array_index
+
+    RBRACK          reduce using rule 20 (transitions -> .)
+    VARIABLE        shift and go to state 5
+
+    transitions                    shift and go to state 44
+    transition                     shift and go to state 4
+    array_ref                      shift and go to state 6
+
+state 28
+
+    (6) if_statement -> IF LPAREN cond . RPAREN LBRACK transitions RBRACK
+
+    RPAREN          shift and go to state 45
+
+
+state 29
+
+    (7) cond -> condo .
+
+    RPAREN          reduce using rule 7 (cond -> condo .)
+
+
+state 30
+
+    (8) condo -> conda . OR condo
+    (9) condo -> conda .
+
+    OR              shift and go to state 46
+    RPAREN          reduce using rule 9 (condo -> conda .)
+
+
+state 31
+
+    (10) conda -> atom_cond . AND conda
+    (11) conda -> atom_cond .
+
+    AND             shift and go to state 47
+    OR              reduce using rule 11 (conda -> atom_cond .)
+    RPAREN          reduce using rule 11 (conda -> atom_cond .)
+
+
+state 32
+
+    (12) atom_cond -> expr . EQ expr
+    (13) atom_cond -> expr . GT expr
+    (14) atom_cond -> expr . LT expr
+    (15) atom_cond -> expr . GE expr
+    (16) atom_cond -> expr . LE expr
+
+    EQ              shift and go to state 48
+    GT              shift and go to state 49
+    LT              shift and go to state 50
+    GE              shift and go to state 51
+    LE              shift and go to state 52
+
+
+state 33
+
+    (17) atom_cond -> TRUE .
+
+    AND             reduce using rule 17 (atom_cond -> TRUE .)
+    OR              reduce using rule 17 (atom_cond -> TRUE .)
+    RPAREN          reduce using rule 17 (atom_cond -> TRUE .)
+
+
+state 34
+
+    (18) atom_cond -> FALSE .
+
+    AND             reduce using rule 18 (atom_cond -> FALSE .)
+    OR              reduce using rule 18 (atom_cond -> FALSE .)
+    RPAREN          reduce using rule 18 (atom_cond -> FALSE .)
+
+
+state 35
+
+    (21) transition -> VARIABLE ASSIGN expr SEMI .
+
+    VARIABLE        reduce using rule 21 (transition -> VARIABLE ASSIGN expr SEMI .)
+    IF              reduce using rule 21 (transition -> VARIABLE ASSIGN expr SEMI .)
+    RBRACK          reduce using rule 21 (transition -> VARIABLE ASSIGN expr SEMI .)
+
+
+state 36
+
+    (26) expr -> factor PLUS . expr
+    (26) expr -> . factor PLUS expr
+    (27) expr -> . factor MINUS expr
+    (28) expr -> . factor
+    (29) factor -> . factor TIMES operand
+    (30) factor -> . factor DIV operand
+    (31) factor -> . factor MOD operand
+    (32) factor -> . operand
+    (33) operand -> . VARIABLE
+    (34) operand -> . NUMBER
+    (35) operand -> . array_ref
+    (36) operand -> . LPAREN expr RPAREN
+    (23) array_ref -> . VARIABLE array_index
+
+    VARIABLE        shift and go to state 17
+    NUMBER          shift and go to state 21
+    LPAREN          shift and go to state 23
+
+    factor                         shift and go to state 19
+    expr                           shift and go to state 53
+    operand                        shift and go to state 20
+    array_ref                      shift and go to state 22
+
+state 37
+
+    (27) expr -> factor MINUS . expr
+    (26) expr -> . factor PLUS expr
+    (27) expr -> . factor MINUS expr
+    (28) expr -> . factor
+    (29) factor -> . factor TIMES operand
+    (30) factor -> . factor DIV operand
+    (31) factor -> . factor MOD operand
+    (32) factor -> . operand
+    (33) operand -> . VARIABLE
+    (34) operand -> . NUMBER
+    (35) operand -> . array_ref
+    (36) operand -> . LPAREN expr RPAREN
+    (23) array_ref -> . VARIABLE array_index
+
+    VARIABLE        shift and go to state 17
+    NUMBER          shift and go to state 21
+    LPAREN          shift and go to state 23
+
+    factor                         shift and go to state 19
+    expr                           shift and go to state 54
+    operand                        shift and go to state 20
+    array_ref                      shift and go to state 22
+
+state 38
+
+    (29) factor -> factor TIMES . operand
+    (33) operand -> . VARIABLE
+    (34) operand -> . NUMBER
+    (35) operand -> . array_ref
+    (36) operand -> . LPAREN expr RPAREN
+    (23) array_ref -> . VARIABLE array_index
+
+    VARIABLE        shift and go to state 17
+    NUMBER          shift and go to state 21
+    LPAREN          shift and go to state 23
+
+    operand                        shift and go to state 55
+    array_ref                      shift and go to state 22
+
+state 39
+
+    (30) factor -> factor DIV . operand
+    (33) operand -> . VARIABLE
+    (34) operand -> . NUMBER
+    (35) operand -> . array_ref
+    (36) operand -> . LPAREN expr RPAREN
+    (23) array_ref -> . VARIABLE array_index
+
+    VARIABLE        shift and go to state 17
+    NUMBER          shift and go to state 21
+    LPAREN          shift and go to state 23
+
+    operand                        shift and go to state 56
+    array_ref                      shift and go to state 22
+
+state 40
+
+    (31) factor -> factor MOD . operand
+    (33) operand -> . VARIABLE
+    (34) operand -> . NUMBER
+    (35) operand -> . array_ref
+    (36) operand -> . LPAREN expr RPAREN
+    (23) array_ref -> . VARIABLE array_index
+
+    VARIABLE        shift and go to state 17
+    NUMBER          shift and go to state 21
+    LPAREN          shift and go to state 23
+
+    operand                        shift and go to state 57
+    array_ref                      shift and go to state 22
+
+state 41
+
+    (36) operand -> LPAREN expr . RPAREN
+
+    RPAREN          shift and go to state 58
+
+
+state 42
+
+    (24) array_index -> LPAREN expr RPAREN . array_index
+    (25) array_index -> LPAREN expr RPAREN .
+    (24) array_index -> . LPAREN expr RPAREN array_index
+    (25) array_index -> . LPAREN expr RPAREN
+
+    ASSIGN          reduce using rule 25 (array_index -> LPAREN expr RPAREN .)
+    PLUS            reduce using rule 25 (array_index -> LPAREN expr RPAREN .)
+    MINUS           reduce using rule 25 (array_index -> LPAREN expr RPAREN .)
+    TIMES           reduce using rule 25 (array_index -> LPAREN expr RPAREN .)
+    DIV             reduce using rule 25 (array_index -> LPAREN expr RPAREN .)
+    MOD             reduce using rule 25 (array_index -> LPAREN expr RPAREN .)
+    SEMI            reduce using rule 25 (array_index -> LPAREN expr RPAREN .)
+    RPAREN          reduce using rule 25 (array_index -> LPAREN expr RPAREN .)
+    EQ              reduce using rule 25 (array_index -> LPAREN expr RPAREN .)
+    GT              reduce using rule 25 (array_index -> LPAREN expr RPAREN .)
+    LT              reduce using rule 25 (array_index -> LPAREN expr RPAREN .)
+    GE              reduce using rule 25 (array_index -> LPAREN expr RPAREN .)
+    LE              reduce using rule 25 (array_index -> LPAREN expr RPAREN .)
+    AND             reduce using rule 25 (array_index -> LPAREN expr RPAREN .)
+    OR              reduce using rule 25 (array_index -> LPAREN expr RPAREN .)
+    LPAREN          shift and go to state 13
+
+    array_index                    shift and go to state 59
+
+state 43
+
+    (22) transition -> array_ref ASSIGN expr SEMI .
+
+    VARIABLE        reduce using rule 22 (transition -> array_ref ASSIGN expr SEMI .)
+    IF              reduce using rule 22 (transition -> array_ref ASSIGN expr SEMI .)
+    RBRACK          reduce using rule 22 (transition -> array_ref ASSIGN expr SEMI .)
+
+
+state 44
+
+    (5) if_seq -> if_statement ELSE LBRACK transitions . RBRACK
+
+    RBRACK          shift and go to state 60
+
+
+state 45
+
+    (6) if_statement -> IF LPAREN cond RPAREN . LBRACK transitions RBRACK
+
+    LBRACK          shift and go to state 61
+
+
+state 46
+
+    (8) condo -> conda OR . condo
+    (8) condo -> . conda OR condo
+    (9) condo -> . conda
+    (10) conda -> . atom_cond AND conda
+    (11) conda -> . atom_cond
+    (12) atom_cond -> . expr EQ expr
+    (13) atom_cond -> . expr GT expr
+    (14) atom_cond -> . expr LT expr
+    (15) atom_cond -> . expr GE expr
+    (16) atom_cond -> . expr LE expr
+    (17) atom_cond -> . TRUE
+    (18) atom_cond -> . FALSE
+    (26) expr -> . factor PLUS expr
+    (27) expr -> . factor MINUS expr
+    (28) expr -> . factor
+    (29) factor -> . factor TIMES operand
+    (30) factor -> . factor DIV operand
+    (31) factor -> . factor MOD operand
+    (32) factor -> . operand
+    (33) operand -> . VARIABLE
+    (34) operand -> . NUMBER
+    (35) operand -> . array_ref
+    (36) operand -> . LPAREN expr RPAREN
+    (23) array_ref -> . VARIABLE array_index
+
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+    VARIABLE        shift and go to state 17
+    NUMBER          shift and go to state 21
+    LPAREN          shift and go to state 23
+
+    conda                          shift and go to state 30
+    condo                          shift and go to state 62
+    atom_cond                      shift and go to state 31
+    expr                           shift and go to state 32
+    factor                         shift and go to state 19
+    operand                        shift and go to state 20
+    array_ref                      shift and go to state 22
+
+state 47
+
+    (10) conda -> atom_cond AND . conda
+    (10) conda -> . atom_cond AND conda
+    (11) conda -> . atom_cond
+    (12) atom_cond -> . expr EQ expr
+    (13) atom_cond -> . expr GT expr
+    (14) atom_cond -> . expr LT expr
+    (15) atom_cond -> . expr GE expr
+    (16) atom_cond -> . expr LE expr
+    (17) atom_cond -> . TRUE
+    (18) atom_cond -> . FALSE
+    (26) expr -> . factor PLUS expr
+    (27) expr -> . factor MINUS expr
+    (28) expr -> . factor
+    (29) factor -> . factor TIMES operand
+    (30) factor -> . factor DIV operand
+    (31) factor -> . factor MOD operand
+    (32) factor -> . operand
+    (33) operand -> . VARIABLE
+    (34) operand -> . NUMBER
+    (35) operand -> . array_ref
+    (36) operand -> . LPAREN expr RPAREN
+    (23) array_ref -> . VARIABLE array_index
+
+    TRUE            shift and go to state 33
+    FALSE           shift and go to state 34
+    VARIABLE        shift and go to state 17
+    NUMBER          shift and go to state 21
+    LPAREN          shift and go to state 23
+
+    atom_cond                      shift and go to state 31
+    conda                          shift and go to state 63
+    expr                           shift and go to state 32
+    factor                         shift and go to state 19
+    operand                        shift and go to state 20
+    array_ref                      shift and go to state 22
+
+state 48
+
+    (12) atom_cond -> expr EQ . expr
+    (26) expr -> . factor PLUS expr
+    (27) expr -> . factor MINUS expr
+    (28) expr -> . factor
+    (29) factor -> . factor TIMES operand
+    (30) factor -> . factor DIV operand
+    (31) factor -> . factor MOD operand
+    (32) factor -> . operand
+    (33) operand -> . VARIABLE
+    (34) operand -> . NUMBER
+    (35) operand -> . array_ref
+    (36) operand -> . LPAREN expr RPAREN
+    (23) array_ref -> . VARIABLE array_index
+
+    VARIABLE        shift and go to state 17
+    NUMBER          shift and go to state 21
+    LPAREN          shift and go to state 23
+
+    expr                           shift and go to state 64
+    factor                         shift and go to state 19
+    operand                        shift and go to state 20
+    array_ref                      shift and go to state 22
+
+state 49
+
+    (13) atom_cond -> expr GT . expr
+    (26) expr -> . factor PLUS expr
+    (27) expr -> . factor MINUS expr
+    (28) expr -> . factor
+    (29) factor -> . factor TIMES operand
+    (30) factor -> . factor DIV operand
+    (31) factor -> . factor MOD operand
+    (32) factor -> . operand
+    (33) operand -> . VARIABLE
+    (34) operand -> . NUMBER
+    (35) operand -> . array_ref
+    (36) operand -> . LPAREN expr RPAREN
+    (23) array_ref -> . VARIABLE array_index
+
+    VARIABLE        shift and go to state 17
+    NUMBER          shift and go to state 21
+    LPAREN          shift and go to state 23
+
+    expr                           shift and go to state 65
+    factor                         shift and go to state 19
+    operand                        shift and go to state 20
+    array_ref                      shift and go to state 22
+
+state 50
+
+    (14) atom_cond -> expr LT . expr
+    (26) expr -> . factor PLUS expr
+    (27) expr -> . factor MINUS expr
+    (28) expr -> . factor
+    (29) factor -> . factor TIMES operand
+    (30) factor -> . factor DIV operand
+    (31) factor -> . factor MOD operand
+    (32) factor -> . operand
+    (33) operand -> . VARIABLE
+    (34) operand -> . NUMBER
+    (35) operand -> . array_ref
+    (36) operand -> . LPAREN expr RPAREN
+    (23) array_ref -> . VARIABLE array_index
+
+    VARIABLE        shift and go to state 17
+    NUMBER          shift and go to state 21
+    LPAREN          shift and go to state 23
+
+    expr                           shift and go to state 66
+    factor                         shift and go to state 19
+    operand                        shift and go to state 20
+    array_ref                      shift and go to state 22
+
+state 51
+
+    (15) atom_cond -> expr GE . expr
+    (26) expr -> . factor PLUS expr
+    (27) expr -> . factor MINUS expr
+    (28) expr -> . factor
+    (29) factor -> . factor TIMES operand
+    (30) factor -> . factor DIV operand
+    (31) factor -> . factor MOD operand
+    (32) factor -> . operand
+    (33) operand -> . VARIABLE
+    (34) operand -> . NUMBER
+    (35) operand -> . array_ref
+    (36) operand -> . LPAREN expr RPAREN
+    (23) array_ref -> . VARIABLE array_index
+
+    VARIABLE        shift and go to state 17
+    NUMBER          shift and go to state 21
+    LPAREN          shift and go to state 23
+
+    expr                           shift and go to state 67
+    factor                         shift and go to state 19
+    operand                        shift and go to state 20
+    array_ref                      shift and go to state 22
+
+state 52
+
+    (16) atom_cond -> expr LE . expr
+    (26) expr -> . factor PLUS expr
+    (27) expr -> . factor MINUS expr
+    (28) expr -> . factor
+    (29) factor -> . factor TIMES operand
+    (30) factor -> . factor DIV operand
+    (31) factor -> . factor MOD operand
+    (32) factor -> . operand
+    (33) operand -> . VARIABLE
+    (34) operand -> . NUMBER
+    (35) operand -> . array_ref
+    (36) operand -> . LPAREN expr RPAREN
+    (23) array_ref -> . VARIABLE array_index
+
+    VARIABLE        shift and go to state 17
+    NUMBER          shift and go to state 21
+    LPAREN          shift and go to state 23
+
+    expr                           shift and go to state 68
+    factor                         shift and go to state 19
+    operand                        shift and go to state 20
+    array_ref                      shift and go to state 22
+
+state 53
+
+    (26) expr -> factor PLUS expr .
+
+    SEMI            reduce using rule 26 (expr -> factor PLUS expr .)
+    RPAREN          reduce using rule 26 (expr -> factor PLUS expr .)
+    EQ              reduce using rule 26 (expr -> factor PLUS expr .)
+    GT              reduce using rule 26 (expr -> factor PLUS expr .)
+    LT              reduce using rule 26 (expr -> factor PLUS expr .)
+    GE              reduce using rule 26 (expr -> factor PLUS expr .)
+    LE              reduce using rule 26 (expr -> factor PLUS expr .)
+    AND             reduce using rule 26 (expr -> factor PLUS expr .)
+    OR              reduce using rule 26 (expr -> factor PLUS expr .)
+
+
+state 54
+
+    (27) expr -> factor MINUS expr .
+
+    SEMI            reduce using rule 27 (expr -> factor MINUS expr .)
+    RPAREN          reduce using rule 27 (expr -> factor MINUS expr .)
+    EQ              reduce using rule 27 (expr -> factor MINUS expr .)
+    GT              reduce using rule 27 (expr -> factor MINUS expr .)
+    LT              reduce using rule 27 (expr -> factor MINUS expr .)
+    GE              reduce using rule 27 (expr -> factor MINUS expr .)
+    LE              reduce using rule 27 (expr -> factor MINUS expr .)
+    AND             reduce using rule 27 (expr -> factor MINUS expr .)
+    OR              reduce using rule 27 (expr -> factor MINUS expr .)
+
+
+state 55
+
+    (29) factor -> factor TIMES operand .
+
+    PLUS            reduce using rule 29 (factor -> factor TIMES operand .)
+    MINUS           reduce using rule 29 (factor -> factor TIMES operand .)
+    TIMES           reduce using rule 29 (factor -> factor TIMES operand .)
+    DIV             reduce using rule 29 (factor -> factor TIMES operand .)
+    MOD             reduce using rule 29 (factor -> factor TIMES operand .)
+    SEMI            reduce using rule 29 (factor -> factor TIMES operand .)
+    RPAREN          reduce using rule 29 (factor -> factor TIMES operand .)
+    EQ              reduce using rule 29 (factor -> factor TIMES operand .)
+    GT              reduce using rule 29 (factor -> factor TIMES operand .)
+    LT              reduce using rule 29 (factor -> factor TIMES operand .)
+    GE              reduce using rule 29 (factor -> factor TIMES operand .)
+    LE              reduce using rule 29 (factor -> factor TIMES operand .)
+    AND             reduce using rule 29 (factor -> factor TIMES operand .)
+    OR              reduce using rule 29 (factor -> factor TIMES operand .)
+
+
+state 56
+
+    (30) factor -> factor DIV operand .
+
+    PLUS            reduce using rule 30 (factor -> factor DIV operand .)
+    MINUS           reduce using rule 30 (factor -> factor DIV operand .)
+    TIMES           reduce using rule 30 (factor -> factor DIV operand .)
+    DIV             reduce using rule 30 (factor -> factor DIV operand .)
+    MOD             reduce using rule 30 (factor -> factor DIV operand .)
+    SEMI            reduce using rule 30 (factor -> factor DIV operand .)
+    RPAREN          reduce using rule 30 (factor -> factor DIV operand .)
+    EQ              reduce using rule 30 (factor -> factor DIV operand .)
+    GT              reduce using rule 30 (factor -> factor DIV operand .)
+    LT              reduce using rule 30 (factor -> factor DIV operand .)
+    GE              reduce using rule 30 (factor -> factor DIV operand .)
+    LE              reduce using rule 30 (factor -> factor DIV operand .)
+    AND             reduce using rule 30 (factor -> factor DIV operand .)
+    OR              reduce using rule 30 (factor -> factor DIV operand .)
+
+
+state 57
+
+    (31) factor -> factor MOD operand .
+
+    PLUS            reduce using rule 31 (factor -> factor MOD operand .)
+    MINUS           reduce using rule 31 (factor -> factor MOD operand .)
+    TIMES           reduce using rule 31 (factor -> factor MOD operand .)
+    DIV             reduce using rule 31 (factor -> factor MOD operand .)
+    MOD             reduce using rule 31 (factor -> factor MOD operand .)
+    SEMI            reduce using rule 31 (factor -> factor MOD operand .)
+    RPAREN          reduce using rule 31 (factor -> factor MOD operand .)
+    EQ              reduce using rule 31 (factor -> factor MOD operand .)
+    GT              reduce using rule 31 (factor -> factor MOD operand .)
+    LT              reduce using rule 31 (factor -> factor MOD operand .)
+    GE              reduce using rule 31 (factor -> factor MOD operand .)
+    LE              reduce using rule 31 (factor -> factor MOD operand .)
+    AND             reduce using rule 31 (factor -> factor MOD operand .)
+    OR              reduce using rule 31 (factor -> factor MOD operand .)
+
+
+state 58
+
+    (36) operand -> LPAREN expr RPAREN .
+
+    PLUS            reduce using rule 36 (operand -> LPAREN expr RPAREN .)
+    MINUS           reduce using rule 36 (operand -> LPAREN expr RPAREN .)
+    TIMES           reduce using rule 36 (operand -> LPAREN expr RPAREN .)
+    DIV             reduce using rule 36 (operand -> LPAREN expr RPAREN .)
+    MOD             reduce using rule 36 (operand -> LPAREN expr RPAREN .)
+    SEMI            reduce using rule 36 (operand -> LPAREN expr RPAREN .)
+    RPAREN          reduce using rule 36 (operand -> LPAREN expr RPAREN .)
+    EQ              reduce using rule 36 (operand -> LPAREN expr RPAREN .)
+    GT              reduce using rule 36 (operand -> LPAREN expr RPAREN .)
+    LT              reduce using rule 36 (operand -> LPAREN expr RPAREN .)
+    GE              reduce using rule 36 (operand -> LPAREN expr RPAREN .)
+    LE              reduce using rule 36 (operand -> LPAREN expr RPAREN .)
+    AND             reduce using rule 36 (operand -> LPAREN expr RPAREN .)
+    OR              reduce using rule 36 (operand -> LPAREN expr RPAREN .)
+
+
+state 59
+
+    (24) array_index -> LPAREN expr RPAREN array_index .
+
+    ASSIGN          reduce using rule 24 (array_index -> LPAREN expr RPAREN array_index .)
+    PLUS            reduce using rule 24 (array_index -> LPAREN expr RPAREN array_index .)
+    MINUS           reduce using rule 24 (array_index -> LPAREN expr RPAREN array_index .)
+    TIMES           reduce using rule 24 (array_index -> LPAREN expr RPAREN array_index .)
+    DIV             reduce using rule 24 (array_index -> LPAREN expr RPAREN array_index .)
+    MOD             reduce using rule 24 (array_index -> LPAREN expr RPAREN array_index .)
+    SEMI            reduce using rule 24 (array_index -> LPAREN expr RPAREN array_index .)
+    RPAREN          reduce using rule 24 (array_index -> LPAREN expr RPAREN array_index .)
+    EQ              reduce using rule 24 (array_index -> LPAREN expr RPAREN array_index .)
+    GT              reduce using rule 24 (array_index -> LPAREN expr RPAREN array_index .)
+    LT              reduce using rule 24 (array_index -> LPAREN expr RPAREN array_index .)
+    GE              reduce using rule 24 (array_index -> LPAREN expr RPAREN array_index .)
+    LE              reduce using rule 24 (array_index -> LPAREN expr RPAREN array_index .)
+    AND             reduce using rule 24 (array_index -> LPAREN expr RPAREN array_index .)
+    OR              reduce using rule 24 (array_index -> LPAREN expr RPAREN array_index .)
+
+
+state 60
+
+    (5) if_seq -> if_statement ELSE LBRACK transitions RBRACK .
+
+    $end            reduce using rule 5 (if_seq -> if_statement ELSE LBRACK transitions RBRACK .)
+
+
+state 61
+
+    (6) if_statement -> IF LPAREN cond RPAREN LBRACK . transitions RBRACK
+    (19) transitions -> . transition transitions
+    (20) transitions -> .
+    (21) transition -> . VARIABLE ASSIGN expr SEMI
+    (22) transition -> . array_ref ASSIGN expr SEMI
+    (23) array_ref -> . VARIABLE array_index
+
+    RBRACK          reduce using rule 20 (transitions -> .)
+    VARIABLE        shift and go to state 5
+
+    transitions                    shift and go to state 69
+    transition                     shift and go to state 4
+    array_ref                      shift and go to state 6
+
+state 62
+
+    (8) condo -> conda OR condo .
+
+    RPAREN          reduce using rule 8 (condo -> conda OR condo .)
+
+
+state 63
+
+    (10) conda -> atom_cond AND conda .
+
+    OR              reduce using rule 10 (conda -> atom_cond AND conda .)
+    RPAREN          reduce using rule 10 (conda -> atom_cond AND conda .)
+
+
+state 64
+
+    (12) atom_cond -> expr EQ expr .
+
+    AND             reduce using rule 12 (atom_cond -> expr EQ expr .)
+    OR              reduce using rule 12 (atom_cond -> expr EQ expr .)
+    RPAREN          reduce using rule 12 (atom_cond -> expr EQ expr .)
+
+
+state 65
+
+    (13) atom_cond -> expr GT expr .
+
+    AND             reduce using rule 13 (atom_cond -> expr GT expr .)
+    OR              reduce using rule 13 (atom_cond -> expr GT expr .)
+    RPAREN          reduce using rule 13 (atom_cond -> expr GT expr .)
+
+
+state 66
+
+    (14) atom_cond -> expr LT expr .
+
+    AND             reduce using rule 14 (atom_cond -> expr LT expr .)
+    OR              reduce using rule 14 (atom_cond -> expr LT expr .)
+    RPAREN          reduce using rule 14 (atom_cond -> expr LT expr .)
+
+
+state 67
+
+    (15) atom_cond -> expr GE expr .
+
+    AND             reduce using rule 15 (atom_cond -> expr GE expr .)
+    OR              reduce using rule 15 (atom_cond -> expr GE expr .)
+    RPAREN          reduce using rule 15 (atom_cond -> expr GE expr .)
+
+
+state 68
+
+    (16) atom_cond -> expr LE expr .
+
+    AND             reduce using rule 16 (atom_cond -> expr LE expr .)
+    OR              reduce using rule 16 (atom_cond -> expr LE expr .)
+    RPAREN          reduce using rule 16 (atom_cond -> expr LE expr .)
+
+
+state 69
+
+    (6) if_statement -> IF LPAREN cond RPAREN LBRACK transitions . RBRACK
+
+    RBRACK          shift and go to state 70
+
+
+state 70
+
+    (6) if_statement -> IF LPAREN cond RPAREN LBRACK transitions RBRACK .
+
+    ELSE            reduce using rule 6 (if_statement -> IF LPAREN cond RPAREN LBRACK transitions RBRACK .)
+    $end            reduce using rule 6 (if_statement -> IF LPAREN cond RPAREN LBRACK transitions RBRACK .)
+
