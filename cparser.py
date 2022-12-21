@@ -43,7 +43,7 @@ class Vectorizer:
     def visit_Decl(self, node):
         t = self.visit(node.type)
         init = self.visit(node.init)
-        return node.name, {'type': t[0], 'bound': t[1], 'value': init}
+        return sp.Symbol(node.name, integer=True), {'type': t[0], 'bound': t[1], 'value': init}
         # self.symbol_table[node.name] = {'type': t, 'init': init}
 
     def visit_ArrayDecl(self, node):
@@ -76,60 +76,49 @@ class Vectorizer:
         func_name = node.decl.name
         self.symbol_table.push()
         t, args = self.visit_FuncDecl(node.decl.type)
-        self.visit(node.body)
-        self.symbol_table.pop()
+
+        if func_name != 'main': return
+        for i in range(len(node.body.block_items)):
+            block_item = node.body.block_items[i]
+            b = self.visit(block_item)
+            if isinstance(block_item, Decl):
+                self.symbol_table.insert_record(b[0], **b[1])
+            elif isinstance(block_item, Assignment):
+                self.symbol_table.insert_record(b[0], value=b[1])
+            elif isinstance(block_item, If):
+                conds, bodies = flat_body_compound([b])
+                piece_tuples_dict = {}
+                for cond, trans in zip(conds, bodies):
+                    for var, value in trans:
+                        piece_tuples_dict.setdefault(var, []).append((value, cond))
+                for var in piece_tuples_dict:
+                    value = sp.Piecewise(*piece_tuples_dict[var])
+                    self.symbol_table.insert_record(var, value=value)
+            elif isinstance(block_item, While) or isinstance(block_item, For):
+                pass
+        # self.symbol_table.pop()
         # except :
         #     pass
 
     def visit_Compound(self, node):
         res = []
-        new_blocks = []
+        # # new_blocks = []
         for i in range(len(node.block_items)):
             block_item = node.block_items[i]
             b = self.visit(block_item)
-            if isinstance(block_item, Decl):
-                self.symbol_table.insert_record(b[0], **b[1])
+            # if isinstance(block_item, Decl):
+                # self.symbol_table.insert_record(b[0], **b[1])
                 # self.symbol_table[b[0]] = b[1]
-                lhs = sp.Symbol(b[0], integer=True)
-                rhs = b[1]['value']
-                res.append((lhs, rhs))
-            elif isinstance(block_item, Assignment) and is_const(b[1]):
-                self.symbol_table.insert_record(str(b[0]), value=b[1])
+            #     lhs = sp.Symbol(b[0], integer=True)
+            #     rhs = b[1]['value']
+            #     res.append((lhs, rhs))
+            if isinstance(block_item, Assignment) and is_const(b[1]):
+                # self.symbol_table.insert_record(str(b[0]), value=b[1])
                 # self.symbol_table[str(b[0])] = {'init': b[1]}
                 res.append(b)
             else:
                 res.append(b)
-            
-            # if isinstance(block_item, For) and isinstance(b, tuple):
-            #     # closed-form solution
-            #     res.append(b)
-            if isinstance(block_item, For) and not isinstance(b, tuple):
-                new_blocks.extend(b)
-            else:
-                new_blocks.append(block_item)
-        node.block_items = new_blocks
         return res
-    # def visit_Compound(self, node):
-    #     res = []
-    #     new_blocks = []
-    #     for i in range(len(node.block_items)):
-    #         block_item = node.block_items[i]
-    #         b = self.visit(block_item)
-    #         if isinstance(block_item, Decl):
-    #             self.symbol_table[b[0]] = b[1]
-    #         elif isinstance(block_item, Assignment) and isinstance(b[1], int):
-    #             self.symbol_table[str(b[0])] = {'init': b[1]}# b[1]
-    #         elif isinstance(block_item, For):
-    #             new_blocks.append(b)
-    #             res.append(b)
-    #         
-    #         # if isinstance(block_item, For) and (len(self.loop_stack) == 0 or i == len(node.block_items) - 1 or b[1] is None):
-    #         #     pass
-    #             # new_blocks.extend(b[0])
-    #         # else:
-    #         new_blocks.append(block_item)
-    #     node.block_items = new_blocks
-    #     return res
 
     def visit_BinaryOp(self, node):
         left = self.visit(node.left)
@@ -207,15 +196,7 @@ class Vectorizer:
         nex = self.visit(node.next)
         stmt = self.visit(node.stmt)
 
-        # for i, st in enumerate(stmt):
-        #     if not self._is_cf_tuple(st): continue
-        #     scalar_cf, array_cf = st
-        #     inits = {var: 0 for var in self.symbol_table.get_vars}
-                
-
-        # try:
         filename = 'rec.txt'
-        # considered = set()
         rec = loop2rec(init, nex, stmt, self.symbol_table.get_vars(), filename=filename)
         if rec is None:
             rec = parse(filename)
@@ -227,33 +208,11 @@ class Vectorizer:
         num_iter = compute_N(cond, scalar_cf)
         scalar_cf = scalar_cf.subs({scalar_cf.ind_var: num_iter})
         for array_cf in array_cfs:
-            # scalar_cf = scalar_cf.subs({sp.Symbol(var, integer=True): self.symbol_table.q_value(var) for var in self.symbol_table.get_vars() if self.symbol_table.q_value(var) is not None})
-            # scalar_cf = scalar_cf.subs({sp.Symbol(var, integer=True): self.symbol_table[var]['init'] for var in self.symbol_table if self.symbol_table[var]['init'] is not None})
-            # scalar_cf = scalar_cf.subs({sp.Symbol(var, integer=True): self.symbol_table[var] for var in self.symbol_table if self.symbol_table[var] is not None})
-            # scalar_cf.simplify()
-            # scalar_cf.pp_print()
-            # array_cf = array_cf.subs({sp.Symbol(var, integer=True): self.symbol_table[var]['init'] for var in set(self.symbol_table) - set(old_table) if self.symbol_table[var]['init'] is not None})
             array_cf = array_cf.subs({array_cf.ind_var: num_iter, array_cf.sum_end: num_iter})
-            # considered = set()
-            # if len(self.loop_stack) == 2:
-            # array_cf = array_cf.subs({sp.Symbol(var, integer=True): self.symbol_table.q_value(var) for var in self.symbol_table.get_vars() - old_vars if self.symbol_table.q_value(var) is not None})
-            #     for closed_forms in array_cf.closed_forms:
-            #         not_considered = set(closed_forms) - considered
-            #         for var in not_considered:
-            #             considered.add(var)
-            #             for bnd_var, bnd in zip(array_cf.bounded_vars, self.symbol_table.q_dim_bnd(str(var.func))):
-            #                 array_cf.add_constraint(bnd_var < bnd)
-            #                 array_cf.add_constraint(bnd_var >= 0)
             array_cf.simplify()
-            # scalar_cf.simplify()
-            # res = scalar_cf, array_cf
             array_cf.pp_print()
-            # self.symbol_table = old_table
-            # res = array_cf.to_c() + scalar_cf.to_c()
             final_array_cfs.append(array_cf)
         res = scalar_cf, final_array_cfs 
-        # except:
-        # dim_info = lambda cf: {bnd_var: bnd for bnd_var, bnd in zip(cf.bounded_vars, self.symbol_table[str(var.func)]['type'][1])}
         considered = set()
         for i, st in enumerate(stmt):
             if self._is_cf_tuple(st):
