@@ -41,6 +41,19 @@ class Recurrence:
     def add_constraint(self, constraint):
         self.constraints.append(constraint)
 
+    def to_z3(self):
+        var_cond_trans_dict = {var: [] for var in self.variables}
+        for var in self.variables:
+            var_cond_trans_dict[var] = self._construct_z3_if(self.conditions, [trans[var] for trans in self.transitions])
+        return var_cond_trans_dict
+
+    def _construct_z3_if(self, conditions, transitions):
+        assert(len(conditions) == len(transitions))
+        if len(conditions) == 2:
+            return z3.If(to_z3(conditions[0]), to_z3(transitions[0]), to_z3(transitions[1]))
+        return z3.If(to_z3(conditions[0]), to_z3(transitions[0]), self._construct_z3_if(conditions[1:], transitions[1:]))
+
+
     def print(self):
         for cond, tran in zip(self.conditions, self.transitions):
             print(cond)

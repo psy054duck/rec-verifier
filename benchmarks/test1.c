@@ -8,8 +8,10 @@ int main(void) {
   while (x < 100000000) {
     if (x < 10000000) {
       x++;
+      y++;
     } else {
       x += 2;
+      y += 3;
     }
   }
 

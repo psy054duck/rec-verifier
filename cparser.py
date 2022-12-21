@@ -20,6 +20,7 @@ class Vectorizer:
     def __init__(self):
         # self.symbol_table = {}
         self.symbol_table = SymbolTable()
+        self.var_counter = 0
 
     def visit(self, node):
         method = 'visit_' + node.__class__.__name__
@@ -185,14 +186,14 @@ class Vectorizer:
     def visit_While(self, node):
         cond = self.visit(node.cond)
         stmt = self.visit(node.stmt)
+        self.handle_loop(cond, stmt)
+
+    def handle_loop(self, cond, stmt):
         filename = 'rec.txt'
-        rec = loop2rec([], None, stmt, self.symbol_table.get_vars(), filename=filename)
-        if rec is None:
-            rec = parse(filename)
-        rec.print()
-        res = rec.solve()
-        res.pp_print()
-        print(res.eval({sp.Symbol('x', integer=True): 0, sp.Symbol('_n', integer=True): 100000000}))
+        rec = loop2rec([], None, stmt, self.symbol_table.get_vars())
+        rec_z3_dict = rec.to_z3()
+        
+
 
     def visit_For(self, node):
         init = self.visit(node.init)
@@ -344,24 +345,23 @@ class Vectorizer:
 def is_const(expr):
     return isinstance(expr, int) or isinstance(expr, float) or isinstance(expr, sp.Integer) or isinstance(expr, sp.Float)
 
-def loop2rec(init, nex, body, live_vars, filename=None):
+def loop2rec(init, nex, body, live_vars):
+    filename = 'rec.txt'
     if all(isinstance(b, tuple) for b in body) and all(all(isinstance(i, Closed_form) for i in b) for b in body):
         return flat_body_inner_arr(init, body, nex, live_vars)
     else:
         conds, stmts = flat_body_compound((body + [nex]) if nex is not None else body)
-    if filename is None:
-        pass
-    else:
-        with open(filename, 'w') as fp:
-            s = ''.join('%s = %s;\n' % (var, info['value']) for var, info in (init))
-            s += 'if (%s) {\n' % conds[0]
-            s += '%s\n' % _transform_stmt(stmts[0])
+    with open(filename, 'w') as fp:
+        s = ''.join('%s = %s;\n' % (var, info['value']) for var, info in (init))
+        s += 'if (%s) {\n' % conds[0]
+        s += '%s\n' % _transform_stmt(stmts[0])
+        s += '} '
+        for cond, stmt in zip(conds[1:], stmts[1:]):
+            s += 'else if (%s) {\n' % cond
+            s += '%s\n' % _transform_stmt(stmt)
             s += '} '
-            for cond, stmt in zip(conds[1:], stmts[1:]):
-                s += 'else if (%s) {\n' % cond
-                s += '%s\n' % _transform_stmt(stmt)
-                s += '} '
-            fp.write(s)
+        fp.write(s)
+    return parse(filename)
 
 def _transform_stmt(stmts):
     return '\n'.join(['\t%s = %s;' % (var, expr) for var, expr in stmts])
@@ -450,4 +450,4 @@ if __name__ == '__main__':
     new_ast = vectorizer.visit(c_ast)
     generator = c_generator.CGenerator()
     res = generator.visit(new_ast)
-    print(res)
+    # print(res)
